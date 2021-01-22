@@ -1,0 +1,6 @@
+*.pyc
+dist
+.vscode
+.idea
+build
+priv
