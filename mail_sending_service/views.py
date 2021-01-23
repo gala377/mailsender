@@ -1,4 +1,5 @@
 import http
+import email.utils
 
 import flask
 
@@ -64,12 +65,20 @@ class MailSender(ViewBase):
         try:
             self._verify_request(content)
         except RequestValidationError as e:
+            self.logger.warning("Illegal address %a", e.message)
             return (e.message, http.HTTPStatus.BAD_REQUEST)
         return self._try_sending_email(content)
 
     def _verify_request(self, req):
-        # todo
-        pass
+        valid_keys = {"to", "topic", "content"}
+        for key in req:
+            if key not in valid_keys:
+                raise RequestValidationError(
+                    f"Illegal key '{key}'")
+        for key in valid_keys:
+            if key not in req:
+                raise RequestValidationError(
+                    f"Missing key '{key}'")
 
     def _try_sending_email(self, req):
         sender_index = self._get_sender_index()
@@ -77,7 +86,7 @@ class MailSender(ViewBase):
         if sent_on is None:
            return ("Could not sent an email", http.HTTPStatus.SERVICE_UNAVAILABLE)
         if sent_on != sender_index:
-            self._set_sender_index(self, sent_on)
+            self._set_sender_index(sent_on)
         return ("", http.HTTPStatus.OK)
 
     def _get_sender_index(self):

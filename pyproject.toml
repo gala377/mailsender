@@ -10,6 +10,8 @@ Flask = "^1.1.2"
 Flask-Caching = "^1.9.0"
 sendgrid = "^6.5.0"
 requests = "^2.25.1"
+uWSGI = "^2.0.19"
+redis = "^3.5.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
