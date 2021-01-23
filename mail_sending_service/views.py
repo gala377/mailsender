@@ -88,7 +88,7 @@ class MailSender(ViewBase):
            return ("Could not sent an email", http.HTTPStatus.SERVICE_UNAVAILABLE)
         if sent_on != sender_index:
             self._set_sender_index(sent_on)
-        return ("", http.HTTPStatus.OK)
+        return ("", http.HTTPStatus.ACCEPTED)
 
     def _get_sender_index(self):
         index_store = self.cache
