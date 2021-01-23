@@ -1,10 +1,12 @@
 import http
 import email.utils
+import os.path
 
 import flask
 
 from flask import request
-from flask.views import MethodView
+from flask.globals import current_app
+from flask.views import MethodView, View
 
 from mail_sending_service.mail import senders
 
@@ -27,12 +29,12 @@ class ViewBase(MethodView):
         cls.__subclasses.append(cls)
 
     @classmethod
-    def init_app(cls, app, *args):
+    def init_app(cls, app, **kwargs):
         for view in cls.__subclasses:
             view.logger = app.logger
             app.add_url_rule(
                 view.route,
-                view_func=view.as_view(view.name, *args))
+                view_func=view.as_view(view.name, **kwargs))
 
 
 class HelloView(ViewBase):
@@ -42,6 +44,21 @@ class HelloView(ViewBase):
     def get(self):
         return "Hello World!"
 
+
+class ApiDocsView(ViewBase):
+    name = "api_docs"
+    route = "/api"
+
+    API_DOCS_FILE_NAME = "api_doc.html"
+
+    def __init__(self, *, config, **kwargs):
+        super().__init__()
+        self.dir_path = config['static_files_path']
+
+    def get(self):
+        return flask.send_from_directory(
+            self.dir_path,
+            self.API_DOCS_FILE_NAME)
 
 class RequestValidationError(Exception):
     def __init__(self, message, *args):
@@ -56,7 +73,7 @@ class MailSender(ViewBase):
     CURR_SENDER_KEY = "CURRENT_SENDER"
     DEFAULT_SENDER_INDEX = 0
 
-    def __init__(self, cache, senders):
+    def __init__(self, *, cache, senders, **kwargs):
         self.cache = cache
         self.email_senders = senders
 
