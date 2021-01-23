@@ -65,7 +65,6 @@ class MailSender(ViewBase):
         try:
             self._verify_request(content)
         except RequestValidationError as e:
-            self.logger.warning("Illegal address %a", e.message)
             return (e.message, http.HTTPStatus.BAD_REQUEST)
         return self._try_sending_email(content)
 
@@ -112,7 +111,9 @@ class MailSender(ViewBase):
                 senders_list[sender_index].send(
                     req['to'], req['topic'], req['content'])
             except senders.MailSendingError as e:
-                self.logger.warning("Error while sending email: %a", e)
+                self.logger.warning(
+                    "Error while sending email via provider %s: '%a'",
+                    sender_index, e)
                 sender_index = (sender_index + 1) % len(senders_list)
                 made_full_cycle = senders_list == starting_index
             else:
