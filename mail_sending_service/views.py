@@ -123,6 +123,12 @@ class MailSender(ViewBase):
         made_full_cycle = False
         senders_list = self.email_senders
         sender_index = starting_index
+        if sender_index >= len(senders_list):
+            self.logger.error(
+                "Current senders index is out of bounds - reseting to 0: index: %s, len: %s",
+                sender_index, len(senders_list))
+            self._set_sender_index(0)
+            return None
         while not made_full_cycle:
             try:
                 senders_list[sender_index].send(
@@ -132,8 +138,7 @@ class MailSender(ViewBase):
                     "Error while sending email via provider %s: '%a'",
                     sender_index, e)
                 sender_index = (sender_index + 1) % len(senders_list)
-                made_full_cycle = senders_list == starting_index
+                made_full_cycle = sender_index == starting_index
             else:
                 return sender_index
         return None
-
