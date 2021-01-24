@@ -2,9 +2,12 @@
 
 This project implements simple mail sending service written in flask.
 
-Flask-caching is used for abstraction over a cache. Deployed server
+Flask-caching is used for abstraction over a cache. Deployed server uses redis as a cache.
 
-uses redis as a cache.
+When getting request to send an email application will try to get the index of the provider to send the mail to from cache. If no such record exists in cache it will create it with default value. Then, starting from this index, it will try to send an email using every provider until it succeeds or makes a full cycle in which case it will return 503.
+
+If the index of the provider which has successfully accepted our request is different from the value taken from the cache then the new index is stored as to start with the last working provider next time.
+
 
 ## Installation
 
