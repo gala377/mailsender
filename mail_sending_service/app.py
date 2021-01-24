@@ -16,7 +16,7 @@ def create_app(config=None):
     app = Flask(__name__)
     cache = init_cache(app, config)
     mail_senders = init_mail_senders(app, config)
-    init_views(app, config, cache=cache, mail_senders=mail_senders)
+    init_views(app, config, cache=cache, senders=mail_senders)
     return app
 
 
