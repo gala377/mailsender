@@ -87,7 +87,7 @@ class MailSender(ViewBase):
 
     def _verify_request(self, req):
         if req is None or not isinstance(req, dict):
-            raise RequestValidationError("request is not a json")
+            raise RequestValidationError("Request is not a json")
         valid_keys = {"to", "topic", "content"}
         for key in req:
             if key not in valid_keys:
