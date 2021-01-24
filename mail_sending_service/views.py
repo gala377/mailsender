@@ -37,14 +37,6 @@ class ViewBase(MethodView):
                 view_func=view.as_view(view.name, **kwargs))
 
 
-class HelloView(ViewBase):
-    name = "hello"
-    route = "/hello"
-
-    def get(self):
-        return "Hello World!"
-
-
 class ApiDocsView(ViewBase):
     name = "api_docs"
     route = "/api"
