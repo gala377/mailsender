@@ -2,7 +2,9 @@
 
 This project implements simple mail sending service written in flask.
 
-Flask-caching is used for abstraction over a cache.
+Flask-caching is used for abstraction over a cache. Deployed server
+
+uses redis as a cache.
 
 ## Installation
 
@@ -39,5 +41,14 @@ Application defines 2 endpoints:
 * `/api` - static page documenting application api, generated using swaggers editor,
 * `/mail` - mail sending endpoint, read api documentation or more details.
 
-
 ## Running in docker
+
+Run docker build to build an image.
+
+By default application starts on ports `:8080`.
+
+By default empty configuration is provided wich will result in 500 status code when running the server.
+
+To provide your own configuration set `MSS_CONFIG_PATH` variable to point to your configurations **absolute** path. You can use `/conf` volume to pass your own configuration path.
+
+If you want to provide your own configuration on the build time rather then runtime then change the content of the `conf.ini` file to your desired value.
